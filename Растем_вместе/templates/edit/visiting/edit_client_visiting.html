@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактировать посещение клиента{% endblock %}
+
+{% block content %}
+    <h1>Редактировать посещение клиента</h1>
+    <form method="post" action="{% url 'edit_client_visiting' visit.id %}">
+        {% csrf_token %}
+        <label for="id_client">ФИО клиента</label>
+        {{ form.client }}
+
+        <label for="id_employee">ФИО инструктора</label>
+        {{ form.employee }}
+
+        <label for="id_visiting_date">Дата посещения</label>
+        {{ form.visiting_date }}
+
+        <label for="id_visiting_time">Время посещения</label>
+        {{ form.visiting_time }}
+
+        <label for="id_missed_date">Дата пропуска</label>
+        {{ form.missed_date }}
+
+        <label for="id_rescheduled_date">Дата переноса</label>
+        {{ form.rescheduled_date }}
+
+        <label for="id_rescheduled_time">Время переноса</label>
+        {{ form.rescheduled_time }}
+
+        <label for="id_status">Статус занятия</label>
+        {{ form.status }}
+
+        <label for="id_comment">Комментарий</label>
+        {{ form.comment }}
+
+        <button type="submit" class="create-button">Сохранить</button>
+    </form>
+    <div class="back-button">
+        <a href="{% url 'visiting_list' %}">Назад</a>
+    </div>
+{% endblock %}
