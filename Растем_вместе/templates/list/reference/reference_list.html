@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Список справок{% endblock %}
+
+{% block content %}
+    <h1>Список справок</h1>
+    <div class="search-container">
+        <form method="get" action="{% url 'reference_list' %}">
+            <input type="text" name="q" placeholder="Поиск по ФИО клиента" value="{{ request.GET.q }}">
+            <input type="text" name="type" placeholder="Поиск по типу справки" value="{{ request.GET.type }}">
+            <input type="date" name="analysis_date" placeholder="Дата сдачи анализа" value="{{ request.GET.analysis_date }}">
+            <input type="date" name="expiration_date" placeholder="Дата окончания действия" value="{{ request.GET.expiration_date }}">
+            <button type="submit">Поиск</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <table id="reference-table">
+            <thead>
+                <tr>
+                    <th>ФИО клиента</th>
+                    <th>Тип справки</th>
+                    <th>Дата анализа</th>
+                    <th>Дата окончания</th>
+                    <th>Статус</th>
+                    <th>Комментарий</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reference in references %}
+                    <tr data-id="{{ reference.id }}">
+                        <td>{{ reference.client.last_name }} {{ reference.client.first_name }} {% if reference.client.middle_name %}{{ reference.client.middle_name }}{% endif %}</td>
+                        <td>{{ reference.type_of_reference.type }}</td>
+                        <td>{% if reference.analysis_date %}{{ reference.analysis_date|date:"d.m.Y" }}{% endif %}</td>
+                        <td>{% if reference.expiration_date %}{{ reference.expiration_date|date:"d.m.Y" }}{% endif %}</td>
+                        <td>{{ reference.get_status_display }}</td>
+                        <td>{{ reference.comment }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="button-container">
+        <div class="button-group">
+            <a href="{% url 'create_reference' %}" class="create-button">Создать справку</a>
+            <button class="edit-button" onclick="editSelectedReference()">Редактировать справку</button>
+        </div>
+        <a href="{% url 'reference_child_list' %}" class="children-button">Дети</a>
+    </div>
+
+    <script>
+        let selectedRow = null;
+
+        document.querySelectorAll('#reference-table tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                if (selectedRow) {
+                    selectedRow.classList.remove('selected');
+                }
+                selectedRow = row;
+                row.classList.add('selected');
+            });
+        });
+
+        function editSelectedReference() {
+            if (selectedRow) {
+                const referenceId = selectedRow.getAttribute('data-id');
+                window.location.href = `{% url 'edit_reference' 0 %}`.replace('/0', `/${referenceId}`);
+            } else {
+                alert('Пожалуйста, выберите строку для редактирования справки.');
+            }
+        }
+    </script>
+{% endblock %}
