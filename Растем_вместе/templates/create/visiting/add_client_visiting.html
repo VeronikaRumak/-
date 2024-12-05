@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавить посещение клиента{% endblock %}
+
+{% block content %}
+    <h1>Добавить посещение клиента</h1>
+    <form method="post" action="{% url 'add_client_visiting' %}">
+        {% csrf_token %}
+        <label for="id_client">ФИО клиента</label>
+        {{ form.client }}
+
+        <label for="id_employee">ФИО инструктора</label>
+        {{ form.employee }}
+
+        <label for="id_visiting_date">Дата посещения</label>
+        {{ form.visiting_date }}
+
+        <label for="id_visiting_time">Время посещения</label>
+        {{ form.visiting_time }}
+
+        <label for="id_comment">Комментарий</label>
+        {{ form.comment }}
+
+        <button type="submit" class="create-button">Сохранить</button>
+    </form>
+    <div class="back-button">
+        <a href="{% url 'visiting_list' %}">Назад</a>
+    </div>
+{% endblock %}
