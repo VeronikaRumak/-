@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создать справку для ребенка</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            width: 50%;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .back-button {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-button a {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button a:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    <h1>Создать справку для ребенка</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <div class="back-button">
+        <a href="{% url 'reference_child_list' %}">Назад</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr("#id_analysis_date", {
+                dateFormat: "Y-m-d",
+            });
+
+            flatpickr("#id_expiration_date", {
+                dateFormat: "Y-m-d",
+            });
+        });
+    </script>
+
+</body>
+</html>
