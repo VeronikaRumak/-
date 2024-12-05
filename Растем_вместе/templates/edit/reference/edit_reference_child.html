@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Редактировать справку для ребенка</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+
+</head>
+<body>
+    <h1>Редактировать справку для ребенка</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <div class="back-button">
+        <a href="{% url 'reference_child_list' %}">Назад</a>
+    </div>
+</body>
+</html>
