@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Список посещений детей{% endblock %}
+
+{% block content %}
+<h1>Список посещений детей</h1>
+<div class="search-container">
+    <form method="get" action="{% url 'visiting_child_list' %}">
+        <input type="text" name="child_name" placeholder="ФИО ребенка" value="{{ request.GET.child_name }}">
+        <input type="text" name="employee_name" placeholder="ФИО инструктора" value="{{ request.GET.employee_name }}">
+        <input type="date" name="visiting_date" placeholder="Дата посещения" value="{{ request.GET.visiting_date }}">
+        <input type="time" name="visiting_time" placeholder="Время посещения" value="{{ request.GET.visiting_time }}">
+        <button type="submit">Поиск</button>
+    </form>
+</div>
+<div class="table-container">
+    <table id="visiting-table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>ФИО инструктора</th>
+                <th>ФИО ребенка</th>
+                <th>Статус занятия</th>
+                <th>Дата пропуска</th>
+                <th>Дата переноса</th>
+                <th>Время переноса</th>
+                <th>Комментарий</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visit in visits %}
+                <tr data-id="{{ visit.id }}">
+                    <td>{{ visit.visiting_date|date:"d.m.Y" }}</td>
+                    <td>{{ visit.visiting_time }}</td>
+                    <td>{{ visit.employee.last_name }} {{ visit.employee.first_name }} {% if visit.employee.middle_name %}{{ visit.employee.middle_name }}{% endif %}</td>
+                    <td>{{ visit.child.last_name }} {{ visit.child.first_name }} {% if visit.child.middle_name %}{{ visit.child.middle_name }}{% endif %}</td>
+                    <td>{{ visit.status.status }}</td>
+                    <td>{% if visit.missed_date %}{{ visit.missed_date|date:"d.m.Y" }}{% endif %}</td>
+                    <td>{% if visit.rescheduled_date %}{{ visit.rescheduled_date|date:"d.m.Y" }}{% endif %}</td>
+                    <td>{% if visit.rescheduled_time %}{{ visit.rescheduled_time }}{% endif %}</td>
+                    <td>{{ visit.comment }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="button-container">
+    <div class="button-group">
+        <a href="{% url 'add_child_visiting' %}" class="create-button">Добавить посещение ребенка</a>
+        <button class="edit-button" onclick="editSelectedVisit()">Редактировать</button>
+    </div>
+    <a href="{% url 'visiting_list' %}" class="back-button right-button">Назад</a>
+</div>
+
+<script>
+    let selectedRow = null;
+
+    document.querySelectorAll('#visiting-table tbody tr').forEach(row => {
+        row.addEventListener('click', () => {
+            if (selectedRow) {
+                selectedRow.classList.remove('selected');
+            }
+            selectedRow = row;
+            row.classList.add('selected');
+        });
+    });
+
+    function editSelectedVisit() {
+        if (selectedRow) {
+            const visitId = selectedRow.getAttribute('data-id');
+            window.location.href = `{% url 'edit_child_visiting' 0 %}`.replace('/0', `/${visitId}`);
+        } else {
+            alert('Пожалуйста, выберите строку для редактирования.');
+        }
+    }
+</script>
+{% endblock %}
