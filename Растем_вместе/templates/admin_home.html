@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница админа{% endblock %}
+
+{% block content %}
+    <h1>Список клиентов</h1>
+    <div class="search-container">
+        <form method="get" action="{% url 'admin_home' %}">
+            <input type="text" name="q" placeholder="Поиск по ФИО" value="{{ request.GET.q }}">
+            <button type="submit">Поиск</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <table id="client-table">
+            <thead>
+                <tr>
+                    <th>ФИО клиента</th>
+                    <th>ФИО ребенка</th>
+                    <th>Телефон</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                    <tr data-id="{{ client.id }}">
+                        <td>{{ client.last_name }} {{ client.first_name }} {% if client.middle_name %}{{ client.middle_name }}{% endif %}</td>
+                        <td>
+                            {% for child in client.children.all %}
+                                <span data-child-id="{{ child.id }}">{{ child.last_name }} {{ child.first_name }} {% if child.middle_name %}{{ child.middle_name }}{% endif %}</span><br>
+                            {% empty %}
+                                -
+                            {% endfor %}
+                        </td>
+                        <td>{{ client.phone_number }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="button-container">
+        <div class="button-group">
+            <a href="{% url 'create_client' %}" class="create-button">Создать клиента</a>
+            <a href="{% url 'create_child' %}" class="create-button">Создать ребенка</a>
+            <button class="edit-button" onclick="editSelectedClient()">Редактировать клиента</button>
+        </div>
+        <a href="{% url 'child_list' %}" class="children-button">Дети</a>
+    </div>
+
+    <script>
+        let selectedRow = null;
+
+        document.querySelectorAll('#client-table tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                if (selectedRow) {
+                    selectedRow.classList.remove('selected');
+                }
+                selectedRow = row;
+                row.classList.add('selected');
+            });
+        });
+
+        function editSelectedClient() {
+            if (selectedRow) {
+                const clientId = selectedRow.getAttribute('data-id');
+                window.location.href = `{% url 'edit_client' 0 %}`.replace('/0', `/${clientId}`);
+            } else {
+                alert('Пожалуйста, выберите строку для редактирования клиента.');
+            }
+        }
+    </script>
+{% endblock %}

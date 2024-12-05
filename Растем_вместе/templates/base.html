@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Главная страница админа{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    {% if not request.path == '/login/' %}
+    <div class="right-button">
+        <p>{{ user.last_name }} {{ user.first_name }} {{ user.middle_name }}</p>
+    </div>
+    <div class="menu">
+        <a href="{% url 'admin_home' %}">Клиенты</a>
+        <a href="{% url 'reference_list' %}">Справки</a>
+        <a href="{% url 'visiting_list' %}">Расписание</a>
+    </div>
+    {% endif %}
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr("#id_visiting_date", {
+                dateFormat: "Y-m-d",
+            });
+
+            flatpickr("#id_missed_date", {
+                dateFormat: "Y-m-d",
+            });
+
+            flatpickr("#id_rescheduled_date", {
+                dateFormat: "Y-m-d",
+            });
+
+            flatpickr("#id_visiting_time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minTime: "08:30",
+                maxTime: "19:30",
+                minuteIncrement: 30
+            });
+
+            flatpickr("#id_rescheduled_time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minTime: "08:30",
+                maxTime: "19:30",
+                minuteIncrement: 30
+            });
+        });
+    </script>
+</body>
+</html>
